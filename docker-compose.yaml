@@ -1,0 +1,50 @@
+version: '3.9'
+
+x-default-settings: &default-settings
+  env_file: ./.docker-env
+  restart: always
+
+services:
+  <ИМЯ СЕРВИСА>:
+    container_name: <ИМЯ КОНТЕЙНЕРА>
+    build:
+      context: .
+      args:
+        REQUIREMENTS_DEV: true
+    <<: *default-settings
+    ports:
+      - "${SERVICE_PORT}:8000"
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests/
+    depends_on:
+      <ИМЯ СЕРВИСА>-pdb:
+        condition: service_healthy
+    profiles: [main]
+
+  <ИМЯ СЕРВИСА>-pdb:
+    build:
+      context: .
+    <<: *default-settings
+    ports:
+      - "16010:5432"
+    volumes:
+      - $PWD/volume-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles: [main]
+
+  <ИМЯ СЕРВИСА:
+    <<: *default-settings
+    build:
+      context: .
+      dockerfile: ./Dockerfile-crons
+    command: python /app/externals/main.py
+    volumes:
+      - ./volume-data:/src/crons
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # позволит обращаться на локальный хост машины из докера
+    profiles: [crons]

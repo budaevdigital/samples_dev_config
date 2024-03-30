@@ -1,0 +1,76 @@
+# Docs: https://ruff.rs/docs/rules
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+select = ["ALL"]
+
+# для игнорирования определенного кода ошибки в коде: # noqa: BLE001(например)
+# для игнорирования строчки для всех: # noqa
+ignore = [
+    "ARG",
+    "ANN",
+    "COM812",
+    "ISC001",
+    "EM101",
+    "EM102",
+    "PT001",
+    "PT023",
+    "SIM108",
+    "SIM114",
+    "TRY003",
+    "PLW2901",
+    "D",       # любые замечания с докстрингами
+    "TD",      # игнорировать все что связано с _TODO_
+    "RUF001",  # кириллические символы в докстрингах
+    "RUF002",  # кириллические символы в комментариях
+    "RUF003",  # кириллические символы в _TODO_
+    "FIX002",  # _TODO_ описание проблемы
+    "TRY200",  # Правило удалено - при вызове raise в exc требовалось указывать raise <name> from exc
+    "B008",    # проверка вызова функций в аргументах других функций - в Depends нам нужен
+    "PTH100",  # рекомендация по использованию `Path.parent` вместо os.path.abspath
+    "PTH120",  # рекомендация по использованию `Path.parent` вместо os.path.dirname
+    "PTH118",  # рекомендация по использованию `Path` with `/` вместо os.path.join
+]
+fixable = ["ALL"]
+unfixable = []
+
+exclude = [
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "venv",
+    "__pycache__",
+    "nginx",
+    "postgresql",
+    "docs",
+    "migration/",
+    "tests/",
+]
+per-file-ignores = {}
+
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+
+[tool.pytest.ini_options]
+pythonpath = [
+	".", "src"
+]
+asyncio_mode="auto"
